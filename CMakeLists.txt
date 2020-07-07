@@ -14,6 +14,8 @@ find_package(ZLIB REQUIRED)
 include_directories(${ZLIB_INCLUDE_DIRS})
 
 add_library(cnpy SHARED "cnpy.cpp")
+add_library(cnpy::cnpy ALIAS cnpy)
+
 target_link_libraries(cnpy ${ZLIB_LIBRARIES})
 install(TARGETS "cnpy" LIBRARY DESTINATION lib PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
 
@@ -28,3 +30,9 @@ install(FILES "mat2npz" "npy2mat" "npz2mat" DESTINATION bin PERMISSIONS OWNER_RE
 
 add_executable(example1 example1.cpp)
 target_link_libraries(example1 cnpy)
+
+# Support using find_package(cnpy CONFIG)
+install(TARGETS cnpy EXPORT cnpyConfig)
+install(EXPORT cnpyConfig
+        NAMESPACE cnpy::
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/cnpy)
